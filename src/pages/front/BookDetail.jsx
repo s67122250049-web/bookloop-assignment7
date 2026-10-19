@@ -2,7 +2,7 @@ import { getBookCover } from "../../utils/bookCover.js";
 import { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useFirestoreCollection } from "../../hooks/useFirestoreCollection.js";
-import { addDocument, updateDocument } from "../../services/firestoreService.js";
+import { rentBook } from "../../services/firestoreService.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 function BookDetail() {
@@ -43,23 +43,7 @@ function BookDetail() {
     setRenting(true);
     setRentError(null);
     try {
-      const today = new Date();
-      const dueDate = new Date(today);
-      dueDate.setDate(dueDate.getDate() + (book.rentalDays || 14));
-
-      await addDocument("rentals", {
-        memberId: profile.id,
-        bookId: book._id,
-        rentalDate: today.toISOString().slice(0, 10),
-        dueDate: dueDate.toISOString().slice(0, 10),
-        returnDate: null,
-        status: "Rented",
-        fine: 0,
-      });
-
-      await updateDocument("books", book._id, {
-        quantityAvailable: book.quantityAvailable - 1,
-      });
+      await rentBook(book._id, profile._id, book.rentalDays);
 
       navigate("/member/rentals");
     } catch (err) {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useFirestoreCollection } from "../../hooks/useFirestoreCollection.js";
-import { updateDocument } from "../../services/firestoreService.js";
+import { returnBook } from "../../services/firestoreService.js";
 
 // คำนวณจำนวนวันที่เกินกำหนด เทียบกับวันที่คืนจริง (หรือวันปัจจุบันถ้ายังไม่คืน)
 function daysLate(rental) {
@@ -29,22 +29,9 @@ function ReturnManagement() {
   // และเพิ่มจำนวนเล่มที่พร้อมให้เช่าของหนังสือเล่มนั้นกลับคืน 1 เล่ม
   async function handleMarkReturned(rental) {
     setProcessingId(rental._id);
-    const book = books.find((b) => b._id === rental.bookId);
-    const late = daysLate(rental);
-    const fine = late * (book?.lateFeePerDay || 10);
-    const today = new Date().toISOString().slice(0, 10);
-
+    if (!window.confirm("ยืนยันว่าได้รับหนังสือคืนแล้ว?")) { setProcessingId(null); return; }
     try {
-      await updateDocument("rentals", rental._id, {
-        status: "Returned",
-        returnDate: today,
-        fine,
-      });
-      if (book) {
-        await updateDocument("books", book._id, {
-          quantityAvailable: book.quantityAvailable + 1,
-        });
-      }
+      await returnBook(rental._id);
     } catch (err) {
       alert("บันทึกการคืนไม่สำเร็จ: " + (err.message || "unknown error"));
     } finally {

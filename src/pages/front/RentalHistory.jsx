@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useFirestoreCollection } from "../../hooks/useFirestoreCollection.js";
+import { useMyRentals } from "../../hooks/useMyRentals.js";
 
 function statusBadgeClass(status) {
   if (status === "Rented") return "badge badge-info";
@@ -18,7 +19,7 @@ function statusLabel(status) {
 
 function RentalHistory() {
   const { profile, isLoggedIn, loading: authLoading } = useAuth();
-  const { data: rentals, loading: loadingRentals } = useFirestoreCollection("rentals");
+  const { data: rentals, loading: loadingRentals } = useMyRentals();
   const { data: books, loading: loadingBooks } = useFirestoreCollection("books");
 
   if (authLoading || loadingRentals || loadingBooks) {
@@ -36,7 +37,7 @@ function RentalHistory() {
     );
   }
 
-  const myHistory = rentals.filter((r) => r.memberId === profile.id);
+  const myHistory = rentals;
 
   return (
     <>

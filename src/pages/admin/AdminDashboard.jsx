@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFirestoreCollection } from "../../hooks/useFirestoreCollection.js";
-import { seedDatabase } from "../../services/seedDatabase.js";
+
 
 const iconBook = "/images/icons/book.svg";
 const iconUser = "/images/icons/user.svg";
@@ -19,25 +19,7 @@ function AdminDashboard() {
   const { data: books, loading: loadingBooks } = useFirestoreCollection("books");
   const { data: members, loading: loadingMembers } = useFirestoreCollection("members");
   const { data: rentals, loading: loadingRentals } = useFirestoreCollection("rentals");
-  const [seeding, setSeeding] = useState(false);
-  const [seedMessage, setSeedMessage] = useState(null);
-
-  const loading = loadingBooks || loadingMembers || loadingRentals;
-
-  async function handleSeed() {
-    setSeeding(true);
-    setSeedMessage(null);
-    try {
-      await seedDatabase();
-      setSeedMessage("นำเข้าข้อมูลตัวอย่างเรียบร้อยแล้ว");
-    } catch (err) {
-      setSeedMessage("นำเข้าข้อมูลไม่สำเร็จ: " + (err.message || "unknown error"));
-    } finally {
-      setSeeding(false);
-    }
-  }
-
-  if (loading) {
+  if (loadingBooks || loadingMembers || loadingRentals) {
     return <p className="empty-state">กำลังโหลดข้อมูลจาก Firestore...</p>;
   }
 
@@ -56,12 +38,7 @@ function AdminDashboard() {
           <h1>ภาพรวมระบบ</h1>
           <p>สรุปสถานะหนังสือ สมาชิก และรายการเช่า-คืนล่าสุด (เชื่อมต่อ Firestore แบบเรียลไทม์)</p>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "6px" }}>
-          <button type="button" className="btn btn-outline" onClick={handleSeed} disabled={seeding}>
-            {seeding ? "กำลังนำเข้า..." : "นำเข้าข้อมูลตัวอย่าง"}
-          </button>
-          {seedMessage && <span style={{ fontSize: "0.78rem", color: "var(--muted)" }}>{seedMessage}</span>}
-        </div>
+
       </div>
 
       {books.length === 0 && (

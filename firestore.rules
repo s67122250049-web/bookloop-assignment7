@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function admin() {
+      return signedIn() &&
+        exists(/databases/$(database)/documents/members/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/members/$(request.auth.uid)).data.role == 'admin';
+    }
+    function validStock(d) {
+      return d.quantityTotal is int && d.quantityTotal >= 0 &&
+        d.quantityAvailable is int && d.quantityAvailable >= 0 &&
+        d.quantityAvailable <= d.quantityTotal;
+    }
+    function bookPath(bookId) {
+      return /databases/$(database)/documents/books/$(bookId);
+    }
+    function rentalPath(rentalId) {
+      return /databases/$(database)/documents/rentals/$(rentalId);
+    }
+    // A non-admin stock decrement must create one matching new rental
+    // atomically. Both documents are checked against the post-transaction state.
+    function validMemberStockDecrease(bookId) {
+      let rentalId = request.resource.data.get('lastRentalId', '');
+      return signedIn() && rentalId is string && rentalId.size() > 0 &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['quantityAvailable', 'lastRentalId']) &&
+        validStock(request.resource.data) &&
+        request.resource.data.quantityAvailable == resource.data.quantityAvailable - 1 &&
+        !exists(rentalPath(rentalId)) &&
+        existsAfter(rentalPath(rentalId)) &&
+        getAfter(rentalPath(rentalId)).data.memberId == request.auth.uid &&
+        getAfter(rentalPath(rentalId)).data.bookId == bookId &&
+        getAfter(rentalPath(rentalId)).data.status == 'Rented';
+    }
+    function validMemberRentalCreate(rentalId) {
+      let b = request.resource.data.bookId;
+      return signedIn() &&
+        request.resource.data.keys().hasOnly(['memberId','bookId','rentalDate','dueDate','returnDate','status','fine']) &&
+        request.resource.data.memberId == request.auth.uid &&
+        b is string && b.size() > 0 &&
+        request.resource.data.status == 'Rented' &&
+        request.resource.data.returnDate == null &&
+        request.resource.data.fine == 0 &&
+        request.resource.data.rentalDate is string &&
+        request.resource.data.dueDate is string &&
+        exists(bookPath(b)) &&
+        get(bookPath(b)).data.quantityAvailable is int &&
+        get(bookPath(b)).data.quantityAvailable > 0 &&
+        getAfter(bookPath(b)).data.quantityAvailable == get(bookPath(b)).data.quantityAvailable - 1 &&
+        getAfter(bookPath(b)).data.lastRentalId == rentalId;
+    }
+    match /books/{bookId} {
+      allow read: if true;
+      allow create, delete: if admin();
+      allow update: if admin() || validMemberStockDecrease(bookId);
+    }
+    match /members/{memberId} {
+      allow get: if admin() || (signedIn() && request.auth.uid == memberId);
+      allow list: if admin();
+      allow create: if admin() || (signedIn() && request.auth.uid == memberId &&
+        request.resource.data.role == 'member' &&
+        request.resource.data.id == memberId &&
+        request.resource.data.email == request.auth.token.email &&
+        request.resource.data.status == 'Active');
+      allow update: if admin() || (signedIn() && request.auth.uid == memberId &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','phone']));
+      allow delete: if admin();
+    }
+    match /rentals/{rentalId} {
+      allow get, list: if admin() || (signedIn() && resource.data.memberId == request.auth.uid);
+      allow create: if admin() || validMemberRentalCreate(rentalId);
+      allow update, delete: if admin();
+    }
+  }
+}

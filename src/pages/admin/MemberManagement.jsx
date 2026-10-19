@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useFirestoreCollection } from "../../hooks/useFirestoreCollection.js";
-import { addDocument, updateDocument } from "../../services/firestoreService.js";
+import { updateDocument } from "../../services/firestoreService.js";
 
 const iconSearch = "/images/icons/search.svg";
 
@@ -53,7 +53,7 @@ function MemberManagement() {
       if (editingId) {
         await updateDocument("members", editingId, form);
       } else {
-        await addDocument("members", form);
+        throw new Error("กรุณาให้สมาชิกสมัครผ่านหน้าสมัครสมาชิก เพื่อสร้างบัญชี Authentication ก่อน");
       }
       setModalOpen(false);
     } catch (err) {
@@ -79,9 +79,7 @@ function MemberManagement() {
           <h1>จัดการสมาชิก</h1>
           <p>ข้อมูลสมาชิกทั้งหมด (เชื่อมต่อ Firestore — บันทึกจริง)</p>
         </div>
-        <button type="button" className="btn btn-primary" onClick={openAddModal}>
-          + เพิ่มสมาชิก
-        </button>
+
       </div>
 
       <div className="admin-toolbar">
