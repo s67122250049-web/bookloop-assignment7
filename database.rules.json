@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "categories": {
+      ".read": true,
+      ".write": false
+    },
+    ".read": false,
+    ".write": false
+  }
+}

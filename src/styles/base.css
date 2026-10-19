@@ -1,0 +1,261 @@
+/* =========================================================
+   BOOKLOOP — Shared Design System
+   ใช้ร่วมกันทั้ง Front Office และ Back Office
+   ========================================================= */
+
+:root {
+  --cream: #f5f0e8;
+  --paper: #f4efe6;
+  --ink: #20201e;
+  --brown: #6e5848;
+  --brown-dark: #46372c;
+  --muted: #6d675e;
+  --line: #ded5c4;
+  --gold: #b8863b;
+  --gold-soft: #efe2c8;
+
+  --success: #4a7a4a;
+  --success-bg: #e7f0e3;
+  --danger: #a1453b;
+  --danger-bg: #f6e4e0;
+  --warning: #b8863b;
+  --warning-bg: #f4e9d3;
+  --info: #4a6a8a;
+  --info-bg: #e4ecf3;
+
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-body: Arial, Helvetica, sans-serif;
+
+  --radius: 4px;
+  --radius-lg: 10px;
+  --container: 1120px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  margin: 0 0 0.5em;
+  color: var(--ink);
+  font-weight: 400;
+}
+
+p {
+  margin: 0 0 1em;
+  color: var(--muted);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-body);
+}
+
+/* ---------- buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 26px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+}
+
+.btn-primary {
+  background: var(--brown);
+  color: var(--cream);
+}
+
+.btn-primary:hover {
+  background: var(--brown-dark);
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.btn-outline:hover {
+  border-color: var(--brown);
+  color: var(--brown);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--brown);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.btn-danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- badges / status pills ---------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badge-success {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.badge-danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.badge-warning {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.badge-info {
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+.badge-neutral {
+  background: var(--line);
+  color: var(--muted);
+}
+
+/* ---------- form controls (shared by Login / filters / admin forms) ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.field label {
+  font-size: 0.85rem;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.field input,
+.field select,
+.field textarea {
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: #fff;
+  color: var(--ink);
+  outline: none;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--brown);
+}
+
+section {
+  padding: 72px 24px;
+  max-width: var(--container);
+  margin: 0 auto;
+}
+
+/* ---------- generic card ---------- */
+
+.card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+/* ---------- utility ---------- */
+
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--muted);
+}
+
+.section-head {
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto 40px;
+}
+
+.section-head h2 {
+  font-size: 2rem;
+}
+
+.section-head p {
+  margin: 0;
+}

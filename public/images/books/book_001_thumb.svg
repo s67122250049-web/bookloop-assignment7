@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600">
+<rect width="400" height="600" fill="#6E5848"/>
+<rect x="28" y="28" width="344" height="544" fill="none" stroke="#F5F0E8" stroke-width="2"/>
+<text x="50" y="78" font-family="Arial,sans-serif" font-size="14" letter-spacing="3" fill="#F5F0E8">B001</text>
+<path d="M200 70l12 35 35 12-35 12-12 35-12-35-35-12 35-12z" fill="none" stroke="#F5F0E8" stroke-width="3"/>
+<text x="50" y="430" font-family="Georgia,serif" font-size="30" fill="#F5F0E8">Harry Potter</text>
+<text x="50" y="470" font-family="Arial,sans-serif" font-size="15" letter-spacing="1" fill="#F5F0E8">J.K. Rowling</text>
+<text x="50" y="535" font-family="Arial,sans-serif" font-size="11" letter-spacing="2" fill="#F5F0E8">BOOKLOOP • ORIGINAL DEMO COVER</text>
+</svg>

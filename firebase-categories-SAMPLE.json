@@ -1,0 +1,5 @@
+{
+  "categories": {
+    "cat001": {"name": "นิยาย", "isActive": true, "icon": "📖"}
+  }
+}
