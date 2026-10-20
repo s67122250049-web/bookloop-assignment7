@@ -14,7 +14,15 @@ function statusBadgeClass(status) {
   if (status === "Rented") return "badge badge-info";
   if (status === "Overdue") return "badge badge-danger";
   if (status === "Returned") return "badge badge-success";
+  if (status === "PendingReturn") return "badge badge-info";
   return "badge badge-neutral";
+}
+function statusLabel(status) {
+  if (status === "Rented") return "กำลังเช่า";
+  if (status === "Overdue") return "เกินกำหนด";
+  if (status === "PendingReturn") return "รอยืนยันคืน";
+  if (status === "Returned") return "คืนแล้ว";
+  return status;
 }
 
 function ReturnManagement() {
@@ -71,7 +79,7 @@ function ReturnManagement() {
                 const book = books.find((b) => b._id === rental.bookId);
                 const member = members.find((m) => m.id === rental.memberId);
                 const late = daysLate(rental);
-                const notReturned = rental.status !== "Returned";
+                const notReturned = rental.status === "PendingReturn";
                 return (
                   <tr key={rental._id}>
                     <td>{member?.name || rental.memberId}</td>
@@ -82,7 +90,9 @@ function ReturnManagement() {
                     <td>{late > 0 ? `${late} วัน` : "-"}</td>
                     <td>{rental.fine > 0 ? `${rental.fine} บาท` : "-"}</td>
                     <td>
-                      <span className={statusBadgeClass(rental.status)}>{rental.status}</span>
+                      <span className={statusBadgeClass(rental.status)}>
+  {statusLabel(rental.status)}
+</span>
                     </td>
                     <td>
                       {notReturned ? (
@@ -92,7 +102,7 @@ function ReturnManagement() {
                           disabled={processingId === rental._id}
                           onClick={() => handleMarkReturned(rental)}
                         >
-                          {processingId === rental._id ? "กำลังบันทึก..." : "บันทึกว่าคืนแล้ว"}
+                          {processingId === rental._id ? "กำลังบันทึก..." : "ยืนยันรับคืนหนังสือ"}
                         </button>
                       ) : (
                         "-"

@@ -137,3 +137,76 @@ test("สมาชิกแก้สถานะคืนหนังสือ�
     })
   );
 });
+
+test("Member can request own return", async () => {
+  const db = env.authenticatedContext("member1", {
+    email: "member@example.com",
+  }).firestore();
+
+  await env.withSecurityRulesDisabled(async (context) => {
+    await setDoc(doc(context.firestore(), "rentals", "RETURN001"), {
+      memberId: "member1",
+      bookId: "TEST001",
+      rentalDate: "2026-10-19",
+      dueDate: "2026-11-02",
+      returnDate: null,
+      status: "Rented",
+      fine: 0,
+    });
+  });
+
+  await assertSucceeds(
+    updateDoc(doc(db, "rentals", "RETURN001"), {
+      status: "PendingReturn",
+    })
+  );
+});
+
+test("Member cannot request another member return", async () => {
+  const db = env.authenticatedContext("member2", {
+    email: "member2@example.com",
+  }).firestore();
+
+  await env.withSecurityRulesDisabled(async (context) => {
+    await setDoc(doc(context.firestore(), "rentals", "RETURN002"), {
+      memberId: "member1",
+      bookId: "TEST001",
+      rentalDate: "2026-10-19",
+      dueDate: "2026-11-02",
+      returnDate: null,
+      status: "Rented",
+      fine: 0,
+    });
+  });
+
+  await assertFails(
+    updateDoc(doc(db, "rentals", "RETURN002"), {
+      status: "PendingReturn",
+    })
+  );
+});
+
+test("Member cannot confirm return", async () => {
+  const db = env.authenticatedContext("member1", {
+    email: "member@example.com",
+  }).firestore();
+
+  await env.withSecurityRulesDisabled(async (context) => {
+    await setDoc(doc(context.firestore(), "rentals", "RETURN003"), {
+      memberId: "member1",
+      bookId: "TEST001",
+      rentalDate: "2026-10-19",
+      dueDate: "2026-11-02",
+      returnDate: null,
+      status: "PendingReturn",
+      fine: 0,
+    });
+  });
+
+  await assertFails(
+    updateDoc(doc(db, "rentals", "RETURN003"), {
+      status: "Returned",
+    })
+  );
+});
+

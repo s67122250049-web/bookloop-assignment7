@@ -70,7 +70,15 @@ service cloud.firestore {
     match /rentals/{rentalId} {
       allow get, list: if admin() || (signedIn() && resource.data.memberId == request.auth.uid);
       allow create: if admin() || validMemberRentalCreate(rentalId);
-      allow update, delete: if admin();
+      allow update: if admin() || (
+        signedIn() &&
+        resource.data.memberId == request.auth.uid &&
+        resource.data.status == 'Rented' &&
+        request.resource.data.status == 'PendingReturn' &&
+        request.resource.data.diff(resource.data)
+          .affectedKeys().hasOnly(['status'])
+      );
+      allow delete: if admin();
     }
   }
 }
