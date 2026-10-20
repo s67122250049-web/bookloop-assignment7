@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { categories } from "../../data/mockData.js";
 import { useFirestoreCollection } from "../../hooks/useFirestoreCollection.js";
 import BookCard from "../../components/front/BookCard.jsx";
+import { getBookCover } from "../../utils/bookCover.js";
 
 const iconSearch = "/images/icons/search.svg";
 const iconHeart = "/images/icons/heart.svg";
@@ -104,13 +105,13 @@ function Home() {
         </div>
 
         <div className="hero-visual">
-          {books[1] && (
-            <img src={books[1].cover} alt={books[1].title} className="hero-cover hero-cover-back" />
-          )}
-          {books[3] && (
-            <img src={books[3].cover} alt={books[3].title} className="hero-cover hero-cover-mid" />
-          )}
-          <img src={featuredBook.cover} alt={featuredBook.title} className="hero-cover hero-cover-front" />
+  {books[1] && (
+    <img src={getBookCover(books[1])} alt={books[1].title} className="hero-cover hero-cover-back" />
+  )}
+  {books[3] && (
+    <img src={getBookCover(books[3])} alt={books[3].title} className="hero-cover hero-cover-mid" />
+  )}
+  <img src={getBookCover(featuredBook)} alt={featuredBook.title} className="hero-cover hero-cover-front" />
 
           <div className="featured-card">
             <p className="featured-label">แนะนำประจำสัปดาห์</p>
