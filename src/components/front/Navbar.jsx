@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+﻿import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { logout } from "../../services/authService.js";
 
@@ -27,6 +27,7 @@ function Navbar() {
           </NavLink>
           <NavLink to="/books">หนังสือทั้งหมด</NavLink>
           <NavLink to="/member/dashboard">บัญชีของฉัน</NavLink>
+          <NavLink to="/member/feedback">ประเมินระบบ</NavLink>
         </nav>
 
         {/* แสดงปุ่มตามสถานะล็อกอินจริงจาก AuthContext */}
@@ -53,3 +54,4 @@ function Navbar() {
 }
 
 export default Navbar;
+
