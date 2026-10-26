@@ -10,6 +10,7 @@ const pageTitles = {
   "/admin/members": "จัดการสมาชิก",
   "/admin/rentals": "จัดการรายการเช่า",
   "/admin/returns": "จัดการรายการคืน",
+  "/admin/feedback": "ผลการประเมินระบบ",
 };
 
 function AdminLayout() {

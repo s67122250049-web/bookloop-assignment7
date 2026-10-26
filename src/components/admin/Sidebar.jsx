@@ -13,6 +13,7 @@ const navItems = [
   { to: "/admin/members", label: "จัดการสมาชิก", icon: iconUser },
   { to: "/admin/rentals", label: "จัดการรายการเช่า", icon: iconBookmark },
   { to: "/admin/returns", label: "จัดการรายการคืน", icon: iconHeart },
+  { to: "/admin/feedback", label: "ผลการประเมิน", icon: iconDashboard },
 ];
 
 function Sidebar({ onNavigate }) {

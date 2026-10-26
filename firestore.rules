@@ -67,6 +67,53 @@ service cloud.firestore {
         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','phone']));
       allow delete: if admin();
     }
+    
+    match /feedback/{feedbackId} {
+      // Admin อ่านผลประเมินทั้งหมดได้
+      allow get, list: if admin();
+
+      // สมาชิกส่งแบบประเมินได้หนึ่งครั้งต่อบัญชี
+      allow create: if signedIn() &&
+        request.auth.uid == feedbackId &&
+        request.resource.data.keys().hasOnly([
+          'memberId',
+          'ease',
+          'search',
+          'rental',
+          'satisfaction',
+          'comment',
+          'createdAt'
+        ]) &&
+        request.resource.data.keys().hasAll([
+          'memberId',
+          'ease',
+          'search',
+          'rental',
+          'satisfaction',
+          'comment',
+          'createdAt'
+        ]) &&
+        request.resource.data.memberId == request.auth.uid &&
+        request.resource.data.ease is int &&
+        request.resource.data.ease >= 1 &&
+        request.resource.data.ease <= 5 &&
+        request.resource.data.search is int &&
+        request.resource.data.search >= 1 &&
+        request.resource.data.search <= 5 &&
+        request.resource.data.rental is int &&
+        request.resource.data.rental >= 1 &&
+        request.resource.data.rental <= 5 &&
+        request.resource.data.satisfaction is int &&
+        request.resource.data.satisfaction >= 1 &&
+        request.resource.data.satisfaction <= 5 &&
+        request.resource.data.comment is string &&
+        request.resource.data.comment.size() <= 500 &&
+        request.resource.data.createdAt == request.time;
+
+      // ป้องกันการแก้ไขหรือลบคะแนนเดิม
+      allow update, delete: if false;
+    }
+
     match /rentals/{rentalId} {
       allow get, list: if admin() || (signedIn() && resource.data.memberId == request.auth.uid);
       allow create: if admin() || validMemberRentalCreate(rentalId);
